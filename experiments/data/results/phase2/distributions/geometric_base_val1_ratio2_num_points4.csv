@@ -1,0 +1,11 @@
+start_price,end_price,width,num_prices,prices,feasible
+1,1,0,1,[1],False
+1,2,1,2,"[1, 2]",False
+1,4,3,3,"[1, 2, 4]",False
+1,8,7,4,"[1, 2, 4, 8]",False
+2,2,0,1,[2],False
+2,4,2,2,"[2, 4]",False
+2,8,6,3,"[2, 4, 8]",False
+4,4,0,1,[4],False
+4,8,4,2,"[4, 8]",False
+8,8,0,1,[8],False
