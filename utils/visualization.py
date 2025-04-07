@@ -197,66 +197,56 @@ def plot_theoretical_passive_triangle(vertices, label="Passive Triangle", color=
     plt.show()
 
 
-def plot_passive_surplus_triangle_theory(market, price_set, show_scheme=False, scheme=None, save_path=None):
+def plot_passive_surplus_triangle_theory(market, F, show_scheme=False, scheme=None):
     """
-    绘制 Passive Intermediary 理论三角形（论文图中红色部分）
+    可视化论文中的 Passive Regulation 三角形（理论三角形）
 
-    参数:
-    - market: Market 对象
-    - price_set: F 集合（区间价格）
-    - show_scheme: 是否叠加当前机制点
-    - scheme: 当前方案（可选）
-    - save_path: 如果指定则保存图像
+    顶点：
+    A: (0, SW_max)
+    B: (0, R_uniform)
+    C: (CS_uniform, R_uniform)
     """
+    min_f = min(F)
 
-    values = market.values
-    masses = market.masses
-    min_f = min(price_set)
-    max_f = max(price_set)
+    # 顶点 A：最大社会福利
+    SW_max = sum(v * m for v, m in zip(market.values, market.masses) if v >= min_f)
 
-    # 1. 最大社会福利 SW_max
-    SW_max = sum(v * m for v, m in zip(values, masses) if v >= min_f)
+    # 统一价格（可用 market.optimal_price()[0] 替代）
+    uniform_price = market.optimal_price()[0]
 
-    # 2. 均匀定价 Runiform
-    uniform_revs = [p * sum(m for v, m in zip(values, masses) if v >= p) for p in values]
-    R_uniform = max(uniform_revs)
+    # 顶点 B：统一定价下的生产者收入
+    R_uniform = uniform_price * sum(m for v, m in zip(market.values, market.masses) if v >= uniform_price)
 
-    # 3. CS_uniform = SW_max - R_uniform
+    # 顶点 C：消费者剩余 = 社会福利 - 收入
     CS_uniform = SW_max - R_uniform
 
-    # 4. SW_min_P: 所有价格都 >= max_f 时的 welfare
-    SW_min = sum(v * m for v, m in zip(values, masses) if v >= max_f)
-
-    # 三个点：左下、右下、上
-    A = (0, SW_min)
+    # 三个顶点坐标
+    A = (0, SW_max)
     B = (0, R_uniform)
     C = (CS_uniform, R_uniform)
 
-    triangle_pts = [A, C, B]  # 逆时针顺序绘图更漂亮
+    print("三角形顶点：")
+    print(f"A = {A}  (最大社会福利)")
+    print(f"B = {B}  (统一价格收入)")
+    print(f"C = {C}  (CS = 福利 - 收入)")
 
+    # 可视化绘图
+    x = [A[0], B[0], C[0], A[0]]
+    y = [A[1], B[1], C[1], A[1]]
 
-    # --- 绘图 ---
-    plt.figure(figsize=(7, 7))
-    x = [pt[0] for pt in triangle_pts] + [triangle_pts[0][0]]
-    y = [pt[1] for pt in triangle_pts] + [triangle_pts[0][1]]
+    plt.figure(figsize=(6, 6))
+    plt.plot(x, y, label="Passive Regulation Area", color='red', linewidth=2)
+    plt.fill(x, y, alpha=0.3, color='red')
 
-    plt.plot(x, y, color='red', linewidth=2, label="Passive Regulation Area")
-    plt.fill(x, y, color='red', alpha=0.3)
-
-    if show_scheme and scheme is not None:
+    if show_scheme and scheme:
         cs = scheme.consumer_surplus()
         ps = scheme.producer_surplus()
-        plt.scatter([cs], [ps], color='black', label="Current Scheme", zorder=5)
-        plt.annotate("Current", (cs + 0.1, ps), fontsize=10)
+        plt.scatter([cs], [ps], color='black', label='Current Scheme', zorder=5)
+        plt.annotate('Current', (cs, ps), xytext=(cs + 0.1, ps + 0.1))
 
     plt.xlabel("Consumer Surplus")
     plt.ylabel("Producer Surplus")
-    plt.grid(True)
-    plt.legend()
     plt.title("Theoretical Passive Intermediary Region")
-
-    if save_path:
-        plt.savefig(save_path)
-        plt.close()
-    else:
-        plt.show()
+    plt.legend()
+    plt.grid(True)
+    plt.show()
