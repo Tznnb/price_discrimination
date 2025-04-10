@@ -136,12 +136,13 @@ class HotelPricingAnalysis:
 
         print("\n开始价格歧视分析...")
 
-        # 1. 按客户类型比较价格
+        # 1. 按客户类型比较价格 - 添加ylim限制
         plt.figure(figsize=(12, 6))
         sns.boxplot(x='customer_type', y='adr', data=self.data)
         plt.title('不同客户类型的价格分布')
         plt.xlabel('客户类型')
         plt.ylabel('平均每日价格(ADR)')
+        plt.ylim(0, 600)  # 限制y轴范围为0-1000
         plt.grid(alpha=0.3)
         plt.savefig(self.results_dir / 'customer_type_price.png', dpi=300)
         plt.close()
@@ -151,13 +152,14 @@ class HotelPricingAnalysis:
         print("\n不同客户类型的价格统计:")
         print(customer_price)
 
-        # 2. 按预订提前期分析价格
+        # 2. 按预订提前期分析价格 - 添加ylim限制
         try:
             plt.figure(figsize=(12, 6))
             sns.boxplot(x='lead_time_category', y='adr', data=df)
             plt.title('不同预订提前期的价格分布')
             plt.xlabel('预订提前期')
             plt.ylabel('平均每日价格(ADR)')
+            plt.ylim(0, 600)  # 限制y轴范围为0-1000
             plt.xticks(rotation=45)
             plt.grid(alpha=0.3)
             plt.tight_layout()
@@ -166,24 +168,26 @@ class HotelPricingAnalysis:
         except Exception as e:
             print(f"绘制预订提前期图表时出错: {e}")
 
-        # 3. 按季节分析价格
+        # 3. 按季节分析价格 - 添加ylim限制
         plt.figure(figsize=(12, 6))
         sns.boxplot(x='arrival_date_month', y='adr', data=self.data)
         plt.title('不同月份的价格分布')
         plt.xlabel('月份')
         plt.ylabel('平均每日价格(ADR)')
+        plt.ylim(0, 600)  # 限制y轴范围为0-1000
         plt.xticks(rotation=45)
         plt.grid(alpha=0.3)
         plt.tight_layout()
         plt.savefig(self.results_dir / 'month_price.png', dpi=300)
         plt.close()
 
-        # 4. 按酒店类型和客户类型的交叉分析
+        # 4. 按酒店类型和客户类型的交叉分析 - 添加ylim限制
         plt.figure(figsize=(14, 8))
         sns.boxplot(x='customer_type', y='adr', hue='hotel', data=self.data)
         plt.title('不同酒店和客户类型的价格分布')
         plt.xlabel('客户类型')
         plt.ylabel('平均每日价格(ADR)')
+        plt.ylim(0, 600)  # 限制y轴范围为0-1000
         plt.grid(alpha=0.3)
         plt.legend(title='酒店类型')
         plt.tight_layout()
@@ -385,22 +389,26 @@ class HotelPricingAnalysis:
         original_mean = original_prices.mean()
         original_std = original_prices.std()
 
-        # 设置默认监管参数
-        if regulation_type == 'price_cap':
-            # 默认上限为平均价格的1.5倍
-            price_cap = params.get('cap', original_mean * 1.5)
+        # 使用论文中明确定义的区间值
+        if regulation_type == 'price_range':
+            # 固定使用论文中定义的区间 [56.81, 123.88]
+            price_floor = 56.81
+            price_cap = 123.88
+            df['regulated_price'] = df['adr'].clip(lower=price_floor, upper=price_cap)
+
+        elif regulation_type == 'price_cap':
+            # 仅上限监管，使用论文中的上限值
+            price_cap = 123.88
             df['regulated_price'] = df['adr'].clip(upper=price_cap)
 
-        elif regulation_type == 'price_floor':
-            # 默认下限为平均价格的0.5倍
-            price_floor = params.get('floor', original_mean * 0.5)
-            df['regulated_price'] = df['adr'].clip(lower=price_floor)
-
-        elif regulation_type == 'price_range':
-            # 默认范围为平均价格的0.5-1.5倍
+        else:
+            # 其他监管类型保持原有默认逻辑
             price_floor = params.get('floor', original_mean * 0.5)
             price_cap = params.get('cap', original_mean * 1.5)
-            df['regulated_price'] = df['adr'].clip(lower=price_floor, upper=price_cap)
+            if regulation_type == 'price_floor':
+                df['regulated_price'] = df['adr'].clip(lower=price_floor)
+            else:
+                df['regulated_price'] = df['adr'].clip(lower=price_floor, upper=price_cap)
 
         # 计算监管效果
         df['price_change'] = df['regulated_price'] - df['adr']
@@ -442,28 +450,40 @@ class HotelPricingAnalysis:
             else:
                 print(f"  {k}: {v}")
 
-        # 可视化价格分布变化
-        plt.figure(figsize=(12, 6))
-        sns.kdeplot(df['adr'], label='原始价格')
-        sns.kdeplot(df['regulated_price'], label='监管后价格')
-        plt.axvline(original_mean, color='blue', linestyle='--', label='原始平均价格')
-        plt.axvline(df['regulated_price'].mean(), color='orange', linestyle='--', label='监管后平均价格')
+            # 创建更清晰的价格分布可视化
+            plt.figure(figsize=(14, 8))
 
-        if regulation_type in ['price_cap', 'price_range']:
-            plt.axvline(params.get('cap', original_mean * 1.5), color='red',
-                        linestyle='-', label='价格上限')
+            # 添加直方图以清晰显示截断效果
+            plt.hist(df['adr'], bins=50, alpha=0.3, color='blue', density=True, label='原始价格分布')
+            plt.hist(df['regulated_price'], bins=50, alpha=0.3, color='orange', density=True, label='监管后价格分布')
 
-        if regulation_type in ['price_floor', 'price_range']:
-            plt.axvline(params.get('floor', original_mean * 0.5), color='green',
-                        linestyle='-', label='价格下限')
+            # 添加密度曲线
+            sns.kdeplot(df['adr'], color='blue', label='_nolegend_')
+            sns.kdeplot(df['regulated_price'], color='orange', label='_nolegend_')
 
-        plt.title(f'{regulation_type.title()}监管前后的价格分布')
-        plt.xlabel('价格')
-        plt.ylabel('密度')
-        plt.legend()
-        plt.tight_layout()
-        plt.savefig(self.results_dir / f'{regulation_type}_impact.png', dpi=300)
-        plt.close()
+            # 添加平均线和监管限制线
+            plt.axvline(original_mean, color='blue', linestyle='--', label=f'原始平均价格: {original_mean:.2f}')
+            plt.axvline(df['regulated_price'].mean(), color='orange', linestyle='--',
+                        label=f'监管后平均价格: {df["regulated_price"].mean():.2f}')
+
+            if regulation_type in ['price_cap', 'price_range']:
+                plt.axvline(price_cap, color='red', linestyle='-',
+                            label=f'价格上限: {price_cap:.2f}')
+
+            if regulation_type in ['price_floor', 'price_range']:
+                plt.axvline(price_floor, color='green', linestyle='-',
+                            label=f'价格下限: {price_floor:.2f}')
+
+            plt.title(f'{regulation_type.title()}监管前后的价格分布')
+            plt.xlabel('价格')
+            plt.ylabel('密度')
+            plt.xlim(0, 300)
+            plt.ylim(0, 0.03)
+            plt.grid(alpha=0.3)
+            plt.legend()
+            plt.tight_layout()
+            plt.savefig(self.results_dir / f'{regulation_type}_impact.png', dpi=300)
+            plt.close()
 
         try:
             # 分析不同客户类型受监管影响的差异
