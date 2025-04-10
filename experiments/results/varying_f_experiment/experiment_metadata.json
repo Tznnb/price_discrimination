@@ -1,0 +1,31 @@
+{
+  "timestamp": "2025-04-10 11:49:41",
+  "distributions": [
+    {
+      "name": "uniform",
+      "params": {
+        "n": 5,
+        "low": 1,
+        "high": 10
+      }
+    },
+    {
+      "name": "binary",
+      "params": {
+        "p": 0.5,
+        "low": 1,
+        "high": 10
+      }
+    },
+    {
+      "name": "truncated_normal",
+      "params": {
+        "mu": 5,
+        "sigma": 1.5,
+        "n": 5,
+        "low": 1,
+        "high": 10
+      }
+    }
+  ]
+}

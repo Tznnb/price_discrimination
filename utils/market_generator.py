@@ -1,3 +1,4 @@
+# utils/market_generator.py
 
 import numpy as np
 from scipy.stats import truncnorm

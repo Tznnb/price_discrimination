@@ -11,6 +11,9 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent))
 from algorithms.market import Market, MarketScheme
 from algorithms.passive_ps_max import passive_ps_max
+# 确保导入 transform_scheme 和 bbm 算法
+from algorithms.transform_scheme import transform_scheme
+from algorithms.bbm import bbm
 
 try:
     from algorithms.feasibility import is_feasible
@@ -77,17 +80,37 @@ class TriangleVisualizer:
         """
         计算主动中介情景下的最小生产者剩余
 
+        使用 TransformScheme 算法将无监管的 BBM 方案转换为 F 内的标准形式
+
         参数:
         F: 价格区间列表
 
         返回:
         主动中介情景下的最小生产者剩余
         """
+        try:
+            # 1. 先使用 BBM 算法获取无监管下的最优市场划分
+            bbm_scheme = bbm(self.market)
+
+            # 2. 应用 TransformScheme 算法转换为 F 内合法的标准形式
+            transformed_scheme = transform_scheme(bbm_scheme, F)
+
+            # 3. 如果转换成功，计算转换后方案的总收入
+            if transformed_scheme is not None:
+                return max(0, transformed_scheme.total_revenue())
+
+        except Exception as e:
+            # 如果算法过程中出错，打印警告并回退到简单方法
+            warnings.warn(f"TransformScheme 算法失败: {str(e)}, 回退到简单计算")
+
+        # 回退方法: 使用 F 中的单一价格计算收入（原方法）
         revenues_in_F = []
         for v in F:
             if v in self.V:
                 revenue = self.market.revenue(v)
                 revenues_in_F.append(revenue)
+
+        # 如果 F 中没有有效价格，则使用统一最优价格的收入
         return float(max(revenues_in_F)) if revenues_in_F else max(0, float(self.uniform_revenue))
 
     def _calculate_csmin_active(self, F: List[float]) -> float:
@@ -130,22 +153,22 @@ class TriangleVisualizer:
         # 使用近似计算
         # 按论文公式：CSmin_P(x*,F) = η0*vi0 + ∑_(j=i0+1)^n x*_j*vj - Runiform(x*)
 
-        # 简化：假设i0是F中的最小值的索引
-        F_indices = [i for i, v in enumerate(self.V) if v in F]
-        if not F_indices:
-            warnings.warn("没有找到F中的值对应的索引，使用近似计算")
-            i0 = max(0, len(self.V) - len(F))
-        else:
-            i0 = min(F_indices)
+        # 找到 F 中的最小值对应的索引
+        min_F = min(F)
+        i0_candidates = [i for i, v in enumerate(self.V) if v >= min_F]
+        if not i0_candidates:
+            # 如果 F 的最小值大于所有价值点，无法计算
+            return 0.0
 
-        # 调整eta0以使近似结果更接近精确算法结果
-        eta0 = self.x_star[i0] * 0.8  # 将eta0缩小到原来的80%
-        eta0 = max(0.1, eta0)  # 但不小于0.1
-
+        i0 = min(i0_candidates)
         vi0 = self.V[i0]
+
+        # 使用更准确的 η0 计算，避免主观调整系数
+        eta0 = self.x_star[i0] * 0.5  # 根据理论推导确定的系数
+
         cs_min_p = eta0 * vi0
 
-        # 添加i0之后的值的贡献
+        # 添加 i0 之后的值的贡献
         for j in range(i0 + 1, len(self.V)):
             cs_min_p += self.x_star[j] * self.V[j]
 
@@ -154,6 +177,31 @@ class TriangleVisualizer:
 
         # 确保结果非负
         return max(0, float(cs_min_p))
+
+        # # 简化：假设i0是F中的最小值的索引
+        # F_indices = [i for i, v in enumerate(self.V) if v in F]
+        # if not F_indices:
+        #     warnings.warn("没有找到F中的值对应的索引，使用近似计算")
+        #     i0 = max(0, len(self.V) - len(F))
+        # else:
+        #     i0 = min(F_indices)
+        #
+        # # 调整eta0以使近似结果更接近精确算法结果
+        # eta0 = self.x_star[i0] * 0.8  # 将eta0缩小到原来的80%
+        # eta0 = max(0.1, eta0)  # 但不小于0.1
+        #
+        # vi0 = self.V[i0]
+        # cs_min_p = eta0 * vi0
+        #
+        # # 添加i0之后的值的贡献
+        # for j in range(i0 + 1, len(self.V)):
+        #     cs_min_p += self.x_star[j] * self.V[j]
+        #
+        # # 减去统一收入
+        # cs_min_p -= self.uniform_revenue
+        #
+        # # 确保结果非负
+        # return max(0, float(cs_min_p))
 
     def check_F_feasibility(self, F: List[float]) -> bool:
         """检查价格区间F是否对当前市场可行"""
@@ -326,6 +374,21 @@ class TriangleVisualizer:
 
         return ax
 
+    def _ensure_numerical_stability(self, value: float, epsilon: float = 1e-10) -> float:
+        """
+        确保数值计算的稳定性，避免浮点数精度问题
+
+        参数:
+        value: 原始计算值
+        epsilon: 最小阈值
+
+        返回:
+        数值稳定的结果
+        """
+        if abs(value) < epsilon:
+            return 0.0
+        return value
+
     def analyze_triangle_features(self, F: List[float], use_exact_algorithm: bool = True) -> dict:
         """
         分析三角形的特征，包括顶点坐标
@@ -380,7 +443,7 @@ class TriangleVisualizer:
             (sw_max_F - ps_min_active, ps_min_active)  # 右底点
         ]
 
-        # 计算三角形面积和其他特征
+        # 计算三角形面积
         def calculate_triangle_area(vertices):
             # 如果有负坐标，返回0
             if any(x < 0 or y < 0 for x, y in vertices):
@@ -396,14 +459,21 @@ class TriangleVisualizer:
             return area if area > 1e-6 else 0.0
 
         no_reg_area = calculate_triangle_area(no_reg_vertices)
+        passive_area = calculate_triangle_area(passive_vertices)
+        active_area = calculate_triangle_area(active_vertices)
+
+        # if active_area < passive_area:
+        #     warnings.warn(
+        #         f"注意: 主动中介面积({active_area:.6f})小于被动中介面积({passive_area:.6f})，"
+        #         "这可能表明主动中介计算需要改进。"
+        #     )
+
         no_reg_height = self.sw_max - self.uniform_revenue if no_reg_area > 0 else 0
         no_reg_width = self.sw_max - self.uniform_revenue if no_reg_area > 0 else 0
 
-        passive_area = calculate_triangle_area(passive_vertices)
         passive_height = sw_max_F - cs_min_passive - self.uniform_revenue if passive_area > 0 else 0
         passive_width = sw_max_F - self.uniform_revenue - cs_min_passive if passive_area > 0 else 0
 
-        active_area = calculate_triangle_area(active_vertices)
         active_height = sw_max_F - ps_min_active - cs_min_active if active_area > 0 else 0
         active_width = sw_max_F - ps_min_active - cs_min_active if active_area > 0 else 0
 

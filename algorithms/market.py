@@ -122,5 +122,9 @@ class MarketScheme:
         """计算社会福利"""
         return self.consumer_surplus() + self.producer_surplus()
 
+    def total_revenue(self):
+        """计算方案的总收入"""
+        return sum(segment.total_mass() * price for segment, price in zip(self.segments, self.prices))
+
     def __str__(self):
         return f"MarketScheme with {len(self.segments)} segments"

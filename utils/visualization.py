@@ -97,11 +97,42 @@ def plot_surplus_triangle(market, scheme, price_set, title=None, save_path=None)
         plt.show()
 
 
-def plot_feasibility_heatmap(values, results, title=None, save_path=None):
+# def plot_feasibility_heatmap(values, results, title=None, save_path=None):
+#     """
+#     绘制清晰的二值可行性热图（红色=可行，白色=不可行）
+#     """
+#     plt.figure(figsize=(8, 6))
+#     cmap = sns.color_palette(["white", "red"])
+#
+#     xticks = [str(v) for v in values]
+#     yticks = [str(v) for v in values]
+#
+#     sns.heatmap(results, cmap=cmap, cbar=False,
+#                 xticklabels=xticks, yticklabels=yticks,
+#                 linewidths=0.5, linecolor='gray', square=True)
+#
+#     plt.gca().invert_yaxis()
+#     plt.xlabel('Upper Bound of F')
+#     plt.ylabel('Lower Bound of F')
+#
+#     if title:
+#         plt.title(title)
+#     else:
+#         plt.title("Feasibility Heatmap")
+#
+#     if save_path:
+#         plt.savefig(save_path)
+#         plt.close()
+#     else:
+#         plt.show()
+
+def plot_feasibility_heatmap(values, results, title=None, save_path=None, ax=None):
     """
     绘制清晰的二值可行性热图（红色=可行，白色=不可行）
     """
-    plt.figure(figsize=(8, 6))
+    if ax is None:
+        fig, ax = plt.subplots(figsize=(8, 6))
+
     cmap = sns.color_palette(["white", "red"])
 
     xticks = [str(v) for v in values]
@@ -109,22 +140,20 @@ def plot_feasibility_heatmap(values, results, title=None, save_path=None):
 
     sns.heatmap(results, cmap=cmap, cbar=False,
                 xticklabels=xticks, yticklabels=yticks,
-                linewidths=0.5, linecolor='gray', square=True)
+                linewidths=0.5, linecolor='gray', square=True, ax=ax)
 
-    plt.gca().invert_yaxis()
-    plt.xlabel('Upper Bound of F')
-    plt.ylabel('Lower Bound of F')
+    ax.invert_yaxis()
+    ax.set_xlabel('Upper Bound of F')
+    ax.set_ylabel('Lower Bound of F')
 
     if title:
-        plt.title(title)
+        ax.set_title(title)
     else:
-        plt.title("Feasibility Heatmap")
+        ax.set_title("Feasibility Heatmap")
 
     if save_path:
         plt.savefig(save_path)
         plt.close()
-    else:
-        plt.show()
 
 
 def plot_feasibility_trend(param_grid, results, title="Feasibility Trend", save_path=None):
