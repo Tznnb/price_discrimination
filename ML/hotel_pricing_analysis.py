@@ -144,7 +144,7 @@ class HotelPricingAnalysis:
         plt.ylabel('平均每日价格(ADR)')
         plt.ylim(0, 600)  # 限制y轴范围为0-1000
         plt.grid(alpha=0.3)
-        plt.savefig(self.results_dir / 'customer_type_price.png', dpi=300)
+        plt.savefig(self.results_dir / 'customer_type_price.svg', dpi=300)
         plt.close()
 
         # 计算不同客户类型的平均价格
@@ -163,7 +163,7 @@ class HotelPricingAnalysis:
             plt.xticks(rotation=45)
             plt.grid(alpha=0.3)
             plt.tight_layout()
-            plt.savefig(self.results_dir / 'lead_time_price.png', dpi=300)
+            plt.savefig(self.results_dir / 'lead_time_price.svg', dpi=300)
             plt.close()
         except Exception as e:
             print(f"绘制预订提前期图表时出错: {e}")
@@ -178,7 +178,7 @@ class HotelPricingAnalysis:
         plt.xticks(rotation=45)
         plt.grid(alpha=0.3)
         plt.tight_layout()
-        plt.savefig(self.results_dir / 'month_price.png', dpi=300)
+        plt.savefig(self.results_dir / 'month_price.svg', dpi=300)
         plt.close()
 
         # 4. 按酒店类型和客户类型的交叉分析 - 添加ylim限制
@@ -191,7 +191,7 @@ class HotelPricingAnalysis:
         plt.grid(alpha=0.3)
         plt.legend(title='酒店类型')
         plt.tight_layout()
-        plt.savefig(self.results_dir / 'hotel_customer_price.png', dpi=300)
+        plt.savefig(self.results_dir / 'hotel_customer_price.svg', dpi=300)
         plt.close()
 
         # 5. 价格歧视指数计算
@@ -251,7 +251,7 @@ class HotelPricingAnalysis:
                 sns.heatmap(price_matrix, annot=True, fmt=".2f", cmap="YlGnBu")
                 plt.title('酒店-客户类型价格矩阵')
                 plt.tight_layout()
-                plt.savefig(self.results_dir / 'price_discrimination_matrix.png', dpi=300)
+                plt.savefig(self.results_dir / 'price_discrimination_matrix.svg', dpi=300)
                 plt.close()
             else:
                 print("无法创建价格矩阵：没有足够的数据")
@@ -341,7 +341,7 @@ class HotelPricingAnalysis:
             plt.bar(range(len(importance)), importance[indices])
             plt.xticks(range(len(importance)), [self.features[i] for i in indices], rotation=90)
             plt.tight_layout()
-            plt.savefig(self.results_dir / 'feature_importance.png', dpi=300)
+            plt.savefig(self.results_dir / 'feature_importance.svg', dpi=300)
             plt.close()
 
             # 打印特征重要性
@@ -360,7 +360,7 @@ class HotelPricingAnalysis:
                     shap.summary_plot(shap_values, self.X_test.iloc[:sample_size], plot_type="bar", show=False)
                     plt.title("SHAP特征重要性")
                     plt.tight_layout()
-                    plt.savefig(self.results_dir / 'shap_importance.png', dpi=300)
+                    plt.savefig(self.results_dir / 'shap_importance.svg', dpi=300)
                     plt.close()
             except Exception as e:
                 print(f"生成SHAP图时出错: {e}")
@@ -482,7 +482,7 @@ class HotelPricingAnalysis:
             plt.grid(alpha=0.3)
             plt.legend()
             plt.tight_layout()
-            plt.savefig(self.results_dir / f'{regulation_type}_impact.png', dpi=300)
+            plt.savefig(self.results_dir / f'{regulation_type}_impact.svg', dpi=300)
             plt.close()
 
         try:
@@ -505,7 +505,7 @@ class HotelPricingAnalysis:
             plt.ylabel('平均消费者剩余变化')
             plt.grid(alpha=0.3)
             plt.tight_layout()
-            plt.savefig(self.results_dir / f'{regulation_type}_customer_impact.png', dpi=300)
+            plt.savefig(self.results_dir / f'{regulation_type}_customer_impact.svg', dpi=300)
             plt.close()
         except Exception as e:
             print(f"分析客户类型影响时出错: {e}")
@@ -568,7 +568,7 @@ class HotelPricingAnalysis:
         plt.ylabel('平均消费者剩余变化')
         plt.legend()
         plt.grid(True, alpha=0.3)
-        plt.savefig(self.results_dir / 'regulation_cs_comparison.png', dpi=300)
+        plt.savefig(self.results_dir / 'regulation_cs_comparison.svg', dpi=300)
         plt.close()
 
         # 2. 社会福利变化
@@ -589,7 +589,7 @@ class HotelPricingAnalysis:
         plt.ylabel('平均社会福利变化')
         plt.legend()
         plt.grid(True, alpha=0.3)
-        plt.savefig(self.results_dir / 'regulation_welfare_comparison.png', dpi=300)
+        plt.savefig(self.results_dir / 'regulation_welfare_comparison.svg', dpi=300)
         plt.close()
 
         # 3. 价格变异性影响
@@ -612,7 +612,7 @@ class HotelPricingAnalysis:
                 plt.ylabel('价格变异系数变化百分比')
                 plt.legend()
                 plt.grid(True, alpha=0.3)
-                plt.savefig(self.results_dir / 'regulation_variation_comparison.png', dpi=300)
+                plt.savefig(self.results_dir / 'regulation_variation_comparison.svg', dpi=300)
                 plt.close()
             except Exception as e:
                 print(f"绘制价格变异性比较图时出错: {e}")
@@ -714,7 +714,7 @@ class HotelPricingAnalysis:
                         })
 
                     plt.tight_layout()
-                    plt.savefig(self.results_dir / 'triangle_model_mapping.png', dpi=300)
+                    plt.savefig(self.results_dir / 'triangle_model_mapping.svg', dpi=300)
                     plt.close()
 
                     print("三角形模型映射完成")
@@ -736,7 +736,7 @@ class HotelPricingAnalysis:
                 plt.xlabel('价格')
                 plt.ylabel('密度')
                 plt.grid(alpha=0.3)
-                plt.savefig(self.results_dir / 'price_distribution.png', dpi=300)
+                plt.savefig(self.results_dir / 'price_distribution.svg', dpi=300)
                 plt.close()
             except Exception as e:
                 print(f"映射到三角形模型时出错: {e}")

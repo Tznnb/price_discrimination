@@ -337,7 +337,7 @@ class SensitivityAnalysis:
         if save_dir:
             save_path = Path(save_dir)
             save_path.mkdir(exist_ok=True, parents=True)
-            plt.savefig(save_path / f"{name_suffix}_areas.png", dpi=300)
+            plt.savefig(save_path / f"{name_suffix}_areas.svg", dpi=300)
         plt.close()
 
         # 2. 比率图 (被动/主动)
@@ -368,7 +368,7 @@ class SensitivityAnalysis:
         plt.legend()
 
         if save_dir:
-            plt.savefig(save_path / f"{name_suffix}_ratios.png", dpi=300)
+            plt.savefig(save_path / f"{name_suffix}_ratios.svg", dpi=300)
         plt.close()
 
         # 3. 可行性图
@@ -395,7 +395,7 @@ class SensitivityAnalysis:
         plt.legend()
 
         if save_dir:
-            plt.savefig(save_path / f"{name_suffix}_feasibility.png", dpi=300)
+            plt.savefig(save_path / f"{name_suffix}_feasibility.svg", dpi=300)
         plt.close()
 
         # 4. 总面积和比率汇总图
@@ -444,7 +444,7 @@ class SensitivityAnalysis:
         plt.grid(True, alpha=0.3)
 
         if save_dir:
-            plt.savefig(save_path / f"{name_suffix}_total_summary.png", dpi=300)
+            plt.savefig(save_path / f"{name_suffix}_total_summary.svg", dpi=300)
         plt.close()
 
     def _create_heatmaps(self, passive_areas, active_areas, ratios, feasible_flags, param_values,
@@ -491,7 +491,7 @@ class SensitivityAnalysis:
         if save_dir:
             save_path = Path(save_dir)
             save_path.mkdir(exist_ok=True, parents=True)
-            plt.savefig(save_path / f"{name_suffix}_passive.png", dpi=300)
+            plt.savefig(save_path / f"{name_suffix}_passive.svg", dpi=300)
         plt.close()
 
         # 2. 主动中介面积热力图
@@ -516,7 +516,7 @@ class SensitivityAnalysis:
         plt.ylabel("F Value")
 
         if save_dir:
-            plt.savefig(save_path / f"{name_suffix}_active.png", dpi=300)
+            plt.savefig(save_path / f"{name_suffix}_active.svg", dpi=300)
         plt.close()
 
         # 3. 面积比热力图
@@ -541,7 +541,7 @@ class SensitivityAnalysis:
         plt.ylabel("F Value")
 
         if save_dir:
-            plt.savefig(save_path / f"{name_suffix}_ratio.png", dpi=300)
+            plt.savefig(save_path / f"{name_suffix}_ratio.svg", dpi=300)
         plt.close()
 
         # 4. 可行性热力图
@@ -557,7 +557,7 @@ class SensitivityAnalysis:
         plt.ylabel("F Value")
 
         if save_dir:
-            plt.savefig(save_path / f"{name_suffix}_feasibility_heatmap.png", dpi=300)
+            plt.savefig(save_path / f"{name_suffix}_feasibility_heatmap.svg", dpi=300)
         plt.close()
 
 

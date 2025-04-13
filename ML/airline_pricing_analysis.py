@@ -66,7 +66,7 @@ class AirlinePricingAnalysis:
         plt.title('Price Distribution by Airline')
         plt.xticks(rotation=45)
         plt.tight_layout()
-        plt.savefig('results/airline_price_comparison.png')
+        plt.savefig('results/airline_price_comparison.svg')
         plt.close()
 
         # Price vs. days_left
@@ -75,7 +75,7 @@ class AirlinePricingAnalysis:
             sns.lineplot(x='days_left', y='price', data=df)
             plt.title('Price vs Days to Flight')
             plt.tight_layout()
-            plt.savefig('results/price_vs_days.png')
+            plt.savefig('results/price_vs_days.svg')
             plt.close()
 
         # Price distribution by route
@@ -87,7 +87,7 @@ class AirlinePricingAnalysis:
         plt.title('Price Distribution by Popular Routes')
         plt.xticks(rotation=90)
         plt.tight_layout()
-        plt.savefig('results/route_price_comparison.png')
+        plt.savefig('results/route_price_comparison.svg')
         plt.close()
 
         # Price discrimination metrics
@@ -159,7 +159,7 @@ class AirlinePricingAnalysis:
         plt.tight_layout()
 
         if save_dir:
-            plt.savefig(Path(save_dir) / 'feature_importance.png', dpi=300)
+            plt.savefig(Path(save_dir) / 'feature_importance.svg', dpi=300)
         plt.show()
 
         explainer = shap.Explainer(self.model)
@@ -169,7 +169,7 @@ class AirlinePricingAnalysis:
         shap.summary_plot(shap_values, self.X_test.iloc[:100], plot_type="bar")
 
         if save_dir:
-            plt.savefig(Path(save_dir) / 'shap_importance.png', dpi=300)
+            plt.savefig(Path(save_dir) / 'shap_importance.svg', dpi=300)
         plt.show()
 
         return {
@@ -274,7 +274,7 @@ class AirlinePricingAnalysis:
         plt.ylabel('Density')
         plt.legend()
         plt.tight_layout()
-        plt.savefig(f'results/{regulation_type}_impact.png')
+        plt.savefig(f'results/{regulation_type}_impact.svg')
         plt.close()
 
         return results, df
@@ -320,7 +320,7 @@ class AirlinePricingAnalysis:
         plt.ylabel('Average Consumer Surplus Change')
         plt.legend()
         plt.grid(True, alpha=0.3)
-        plt.savefig('results/regulation_cs_comparison.png')
+        plt.savefig('results/regulation_cs_comparison.svg')
         plt.close()
 
         # 2. 社会福利变化
@@ -339,7 +339,7 @@ class AirlinePricingAnalysis:
         plt.ylabel('Average Welfare Change')
         plt.legend()
         plt.grid(True, alpha=0.3)
-        plt.savefig('results/regulation_welfare_comparison.png')
+        plt.savefig('results/regulation_welfare_comparison.svg')
         plt.close()
 
         return {

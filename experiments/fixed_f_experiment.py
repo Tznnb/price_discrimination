@@ -189,7 +189,7 @@ class FixedFExperiment:
             if save_dir is not None:
                 save_path = Path(save_dir)
                 save_path.mkdir(exist_ok=True, parents=True)
-                plt.savefig(save_path / f"fixed_f_{F[0]}_{F[1]}.png", dpi=300)
+                plt.savefig(save_path / f"fixed_f_{F[0]}_{F[1]}.svg", dpi=300)
 
         # 生成汇总比较图
         self._create_summary_plot(results, F_values, save_dir)
@@ -243,7 +243,7 @@ class FixedFExperiment:
         if save_dir is not None:
             save_path = Path(save_dir)
             save_path.mkdir(exist_ok=True, parents=True)
-            plt.savefig(save_path / "summary_comparison.png", dpi=300)
+            plt.savefig(save_path / "summary_comparison.svg", dpi=300)
 
 
 if __name__ == "__main__":

@@ -102,7 +102,7 @@ class BoundaryConditionsExperiment:
 
             # Create and save triangle visualization
             if save_dir:
-                save_path = Path(save_dir) / f"extreme_binary_p{p:.3f}.png"
+                save_path = Path(save_dir) / f"extreme_binary_p{p:.3f}.svg"
                 fig, ax = plt.subplots(figsize=(8, 6))
                 visualizer.draw_triangles(F=[1, 10], ax=ax)
                 ax.set_title(f"Extreme Binary Distribution (p={p:.3f})")
@@ -168,7 +168,7 @@ class BoundaryConditionsExperiment:
 
             # Create and save triangle visualization
             if save_dir:
-                save_path = Path(save_dir) / f"degenerate_{name.replace(' ', '_')}.png"
+                save_path = Path(save_dir) / f"degenerate_{name.replace(' ', '_')}.svg"
                 fig, ax = plt.subplots(figsize=(8, 6))
                 visualizer.draw_triangles(F=F_values[1], ax=ax)
                 ax.set_title(f"Degenerate Market: {name}")
@@ -262,7 +262,7 @@ class BoundaryConditionsExperiment:
                              xytext=(0, 10),
                              ha='center')
 
-            save_path = Path(save_dir) / "f_width_impact.png"
+            save_path = Path(save_dir) / "f_width_impact.svg"
             plt.savefig(save_path, dpi=300)
             plt.close()
 
@@ -321,7 +321,7 @@ class BoundaryConditionsExperiment:
 
             # Create and save visualization
             if save_dir:
-                save_path = Path(save_dir) / f"sparse_points_n{n}.png"
+                save_path = Path(save_dir) / f"sparse_points_n{n}.svg"
                 fig, ax = plt.subplots(figsize=(8, 6))
                 visualizer.draw_triangles(F=[1, 10], ax=ax)
                 ax.set_title(f"Sparse Price Points (n={n})")
@@ -366,7 +366,7 @@ class BoundaryConditionsExperiment:
             plt.legend()
             plt.grid(alpha=0.3)
 
-            save_path = Path(save_dir) / "sparse_points_summary.png"
+            save_path = Path(save_dir) / "sparse_points_summary.svg"
             plt.savefig(save_path, dpi=300)
             plt.close()
 

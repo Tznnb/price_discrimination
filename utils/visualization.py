@@ -97,35 +97,6 @@ def plot_surplus_triangle(market, scheme, price_set, title=None, save_path=None)
         plt.show()
 
 
-# def plot_feasibility_heatmap(values, results, title=None, save_path=None):
-#     """
-#     绘制清晰的二值可行性热图（红色=可行，白色=不可行）
-#     """
-#     plt.figure(figsize=(8, 6))
-#     cmap = sns.color_palette(["white", "red"])
-#
-#     xticks = [str(v) for v in values]
-#     yticks = [str(v) for v in values]
-#
-#     sns.heatmap(results, cmap=cmap, cbar=False,
-#                 xticklabels=xticks, yticklabels=yticks,
-#                 linewidths=0.5, linecolor='gray', square=True)
-#
-#     plt.gca().invert_yaxis()
-#     plt.xlabel('Upper Bound of F')
-#     plt.ylabel('Lower Bound of F')
-#
-#     if title:
-#         plt.title(title)
-#     else:
-#         plt.title("Feasibility Heatmap")
-#
-#     if save_path:
-#         plt.savefig(save_path)
-#         plt.close()
-#     else:
-#         plt.show()
-
 def plot_feasibility_heatmap(values, results, title=None, save_path=None, ax=None):
     """
     绘制清晰的二值可行性热图（红色=可行，白色=不可行）
@@ -155,37 +126,72 @@ def plot_feasibility_heatmap(values, results, title=None, save_path=None, ax=Non
         plt.savefig(save_path)
         plt.close()
 
+# def plot_feasibility_heatmap(values, results, title=None, save_path=None, ax=None):
+#     """
+#     绘制高清矢量格式的二值可行性热图（红色=可行，白色=不可行）
+#     """
+#     if ax is None:
+#         fig, ax = plt.subplots(figsize=(10, 8))  # 更大的图更清晰
+#
+#     cmap = sns.color_palette(["white", "red"])
+#     xticks = [str(v) for v in values]
+#     yticks = [str(v) for v in values]
+#
+#     sns.heatmap(results, cmap=cmap, cbar=False,
+#                 xticklabels=xticks, yticklabels=yticks,
+#                 linewidths=0.5, linecolor='gray', square=True, ax=ax)
+#
+#     ax.invert_yaxis()
+#     ax.set_xlabel('Upper Bound of F', fontsize=14)
+#     ax.set_ylabel('Lower Bound of F', fontsize=14)
+#     ax.tick_params(labelsize=12)
+#
+#     ax.set_title(title or "Feasibility Heatmap", fontsize=16)
+#
+#     if save_path:
+#         os.makedirs(os.path.dirname(save_path), exist_ok=True)
+#         ext = os.path.splitext(save_path)[1].lower()
+#         if ext in [".pdf", ".svg"]:
+#             plt.savefig(save_path, bbox_inches='tight')
+#         else:
+#             plt.savefig(save_path, dpi=300, bbox_inches='tight')
+#
+#         plt.show()  # 👈 显示图片
+#     else:
+#         plt.show()
+
 
 def plot_feasibility_trend(param_grid, results, title="Feasibility Trend", save_path=None):
     """
-    可视化参数扫描的趋势结果
-
-    参数:
-        param_grid: 参数取值列表
-        results: 每个参数对应的指标字典
-        title: 图标题
-        save_path: 若指定则保存图像
+    可视化参数扫描的趋势结果，输出高清矢量图
     """
     counts = [r["count"] for r in results]
     min_widths = [r["min_width"] if r["min_width"] is not None else 0 for r in results]
     avg_widths = [r["avg_width"] if r["avg_width"] is not None else 0 for r in results]
     conn_ratios = [r["row_connected_ratio"] for r in results]
 
-    plt.figure(figsize=(10, 6))
-    plt.plot(param_grid, counts, label="Feasible Count", marker='o')
-    plt.plot(param_grid, min_widths, label="Min Width", marker='x')
-    plt.plot(param_grid, avg_widths, label="Avg Width", marker='s')
-    plt.plot(param_grid, conn_ratios, label="Row Conn Ratio", marker='^')
-    plt.xlabel("Parameter")
-    plt.ylabel("Metric")
-    plt.title(title)
-    plt.legend()
-    plt.grid(True)
+    fig, ax = plt.subplots(figsize=(10, 6))
+    ax.plot(param_grid, counts, label="Feasible Count", marker='o')
+    ax.plot(param_grid, min_widths, label="Min Width", marker='x')
+    ax.plot(param_grid, avg_widths, label="Avg Width", marker='s')
+    ax.plot(param_grid, conn_ratios, label="Row Conn Ratio", marker='^')
+
+    ax.set_xlabel("Parameter", fontsize=14)
+    ax.set_ylabel("Metric", fontsize=14)
+    ax.set_title(title, fontsize=16)
+    ax.legend(fontsize=12)
+    ax.grid(True)
+    ax.tick_params(labelsize=12)
 
     if save_path:
         os.makedirs(os.path.dirname(save_path), exist_ok=True)
-        plt.savefig(save_path)
-        plt.close()
+        ext = os.path.splitext(save_path)[1].lower()
+        if ext in [".pdf", ".svg"]:
+            plt.savefig(save_path, bbox_inches='tight')
+        else:
+            plt.savefig(save_path, dpi=300, bbox_inches='tight')
+
+        plt.show()  # 👈 显示图片
     else:
         plt.show()
 

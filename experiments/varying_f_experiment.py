@@ -887,7 +887,7 @@ class VaryingFExperiment:
         if save_dir:
             save_path = Path(save_dir)
             save_path.mkdir(exist_ok=True, parents=True)
-            fig_name = f"{dist_name}_feasible_distribution.png"
+            fig_name = f"{dist_name}_feasible_distribution.svg"
             plt.savefig(save_path / fig_name, dpi=300)
             plt.close(fig)
 
@@ -939,7 +939,7 @@ class VaryingFExperiment:
         if save_dir:
             save_path = Path(save_dir)
             save_path.mkdir(exist_ok=True, parents=True)
-            fig_name = f"{dist_name}_feasibility_{x_key}.png"
+            fig_name = f"{dist_name}_feasibility_{x_key}.svg"
             plt.savefig(save_path / fig_name, dpi=300)
             plt.close(fig)
 
@@ -977,7 +977,7 @@ class VaryingFExperiment:
         if save_dir:
             save_path = Path(save_dir)
             save_path.mkdir(exist_ok=True, parents=True)
-            fig_name = f"{dist_name}_{param_name}_analysis.png"
+            fig_name = f"{dist_name}_{param_name}_analysis.svg"
             plt.savefig(save_path / fig_name, dpi=300)
             plt.close(fig)
 
@@ -1032,7 +1032,7 @@ class VaryingFExperiment:
         if save_dir:
             save_path = Path(save_dir)
             save_path.mkdir(exist_ok=True, parents=True)
-            fig_name = f"{dist_name}_triangle_matrix.png"
+            fig_name = f"{dist_name}_triangle_matrix.svg"
             plt.savefig(save_path / fig_name, dpi=300)
             plt.close(fig)
 
@@ -1114,6 +1114,6 @@ class VaryingFExperiment:
         if save_dir:
             save_path = Path(save_dir)
             save_path.mkdir(exist_ok=True, parents=True)
-            fig_name = f"{dist_name}_area_relationship.png"
+            fig_name = f"{dist_name}_area_relationship.svg"
             plt.savefig(save_path / fig_name, dpi=300)
             plt.close(fig)

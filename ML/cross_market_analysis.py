@@ -335,7 +335,7 @@ class CrossMarketAnalysis:
             plt.grid(alpha=0.3)
 
             plt.tight_layout()
-            plt.savefig(self.results_dir / 'regulation_effects_comparison.png', dpi=300)
+            plt.savefig(self.results_dir / 'regulation_effects_comparison.svg', dpi=300)
             plt.close()
 
             # 2. 创建福利转移效果比较图
@@ -349,7 +349,7 @@ class CrossMarketAnalysis:
             plt.ylabel('福利转移效率 (净福利/|消费者剩余变化|)')
             plt.grid(alpha=0.3)
             plt.tight_layout()
-            plt.savefig(self.results_dir / 'welfare_transfer_efficiency.png', dpi=300)
+            plt.savefig(self.results_dir / 'welfare_transfer_efficiency.svg', dpi=300)
             plt.close()
 
             regulation_comparison = {
@@ -425,7 +425,7 @@ class CrossMarketAnalysis:
             plt.grid(alpha=0.3)
 
             plt.tight_layout()
-            plt.savefig(self.results_dir / 'triangle_model_comparison.png', dpi=300)
+            plt.savefig(self.results_dir / 'triangle_model_comparison.svg', dpi=300)
             plt.close()
 
             # 计算模型预测与实际结果的相关性
@@ -476,7 +476,7 @@ class CrossMarketAnalysis:
             plt.legend()
             plt.grid(alpha=0.3)
             plt.tight_layout()
-            plt.savefig(self.results_dir / 'triangle_welfare_correlation.png', dpi=300)
+            plt.savefig(self.results_dir / 'triangle_welfare_correlation.svg', dpi=300)
             plt.close()
 
             triangle_comparison = {
@@ -518,7 +518,7 @@ class CrossMarketAnalysis:
             plt.ylabel('价格歧视指数')
             plt.grid(alpha=0.3)
             plt.tight_layout()
-            plt.savefig(self.results_dir / 'price_discrimination_comparison.png', dpi=300)
+            plt.savefig(self.results_dir / 'price_discrimination_comparison.svg', dpi=300)
             plt.close()
 
             # 分析行业特征与监管效果的关联
@@ -535,7 +535,7 @@ class CrossMarketAnalysis:
             plt.ylabel('特征评分 (1-10)')
             plt.grid(alpha=0.3)
             plt.tight_layout()
-            plt.savefig(self.results_dir / 'market_features_comparison.png', dpi=300)
+            plt.savefig(self.results_dir / 'market_features_comparison.svg', dpi=300)
             plt.close()
 
             # 构建市场特征与监管效果的雷达图
@@ -605,7 +605,7 @@ class CrossMarketAnalysis:
             plt.title('不同市场监管效果雷达图比较 (归一化数据)')
 
             plt.tight_layout()
-            plt.savefig(self.results_dir / 'market_regulation_radar.png', dpi=300)
+            plt.savefig(self.results_dir / 'market_regulation_radar.svg', dpi=300)
             plt.close()
 
             market_factors = {
@@ -691,7 +691,7 @@ class CrossMarketAnalysis:
             plt.ylabel('价格歧视指数')
             plt.grid(alpha=0.3)
             plt.tight_layout()
-            plt.savefig(self.results_dir / 'optimal_regulation_recommendations.png', dpi=300)
+            plt.savefig(self.results_dir / 'optimal_regulation_recommendations.svg', dpi=300)
             plt.close()
 
             # 创建监管参数优化图 - 修改后的版本
@@ -753,7 +753,7 @@ class CrossMarketAnalysis:
             plt.ylabel('价格歧视指数', fontsize=12)
             plt.legend(loc='upper right', fontsize=12)  # 改为内置图例位置
             plt.tight_layout()
-            plt.savefig(self.results_dir / 'regulation_parameter_optimization.png', dpi=300, bbox_inches='tight')
+            plt.savefig(self.results_dir / 'regulation_parameter_optimization.svg', dpi=300, bbox_inches='tight')
             plt.close()
 
             optimization_recommendations = {
@@ -814,7 +814,7 @@ class CrossMarketAnalysis:
             plt.grid(alpha=0.3)
             plt.legend(title='市场')
             plt.tight_layout()
-            plt.savefig(self.results_dir / 'boundary_conditions_importance.png', dpi=300)
+            plt.savefig(self.results_dir / 'boundary_conditions_importance.svg', dpi=300)
             plt.close()
 
             # 理论模型应用限制条件
@@ -854,7 +854,7 @@ class CrossMarketAnalysis:
             plt.grid(alpha=0.3)
             plt.legend(title='市场')
             plt.tight_layout()
-            plt.savefig(self.results_dir / 'model_application_limitations.png', dpi=300)
+            plt.savefig(self.results_dir / 'model_application_limitations.svg', dpi=300)
             plt.close()
 
             boundary_analysis = {

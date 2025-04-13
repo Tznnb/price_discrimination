@@ -225,7 +225,7 @@ class EmpiricalValidationExperiment:
                          "Not feasible", ha='center', color='red')
 
         plt.tight_layout()
-        plt.savefig(self.results_dir / f"distribution_fit_{safe_filename}.png", dpi=300)
+        plt.savefig(self.results_dir / f"distribution_fit_{safe_filename}.svg", dpi=300)
         plt.close()
 
     def _compare_regulation_effects(self):
@@ -336,7 +336,7 @@ class EmpiricalValidationExperiment:
         axes[1, 1].grid(alpha=0.3)
 
         plt.tight_layout()
-        plt.savefig(self.results_dir / "regulation_comparison.png", dpi=300)
+        plt.savefig(self.results_dir / "regulation_comparison.svg", dpi=300)
         plt.close()
 
     def _analyze_boundary_cases(self):
@@ -390,7 +390,7 @@ class EmpiricalValidationExperiment:
             plt.title(f"Concentrated Market: {route_name} (CV={stats['cv']:.4f})")
             plt.xlabel("Normalized Price")
             plt.ylabel("Frequency")
-            plt.savefig(self.results_dir / f"{safe_filename}.png", dpi=300)
+            plt.savefig(self.results_dir / f"{safe_filename}.svg", dpi=300)
             plt.close()
 
             # 保存结果
@@ -432,7 +432,7 @@ class EmpiricalValidationExperiment:
             plt.title(f"Dispersed Market: {route_name} (CV={stats['cv']:.4f})")
             plt.xlabel("Normalized Price")
             plt.ylabel("Frequency")
-            plt.savefig(self.results_dir / f"{safe_filename}.png", dpi=300)
+            plt.savefig(self.results_dir / f"{safe_filename}.svg", dpi=300)
             plt.close()
 
             # 保存结果
